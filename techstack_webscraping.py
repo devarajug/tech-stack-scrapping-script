@@ -14,17 +14,19 @@ from openpyxl.styles import Font, Alignment, PatternFill
 
 class TechStack:
 
-    def __init__(self):
+    def __init__(self, project="", version="1.0.0"):
         warnings.filterwarnings('ignore')
         self.url = "https://nvd.nist.gov/vuln/search/results?query="
         self.noOfIssuesCount = None
+        self.project = project
+        self.version = version
         self.countFrom = None
         self.countThrough = None
         self.startIndex = 0
         self.today = datetime.today().strftime('%d-%m-%Y')
         self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.auditor_comments_file = "" #filename if auditor comments file avaliable
-        self.output_file_name = 'dependency-check-report-Jile-' + self.today + '.xlsx'
+        self.output_file_name = 'dependency-check-report-' + str(self.project) + '-' + str(self.version) + '-' + self.today + '.xlsx'
         self.cpeMatchStrings = {
             "spring_framework_vmware 4.3.25" : "cpe:2.3:a:vmware:spring_framework:4.3.25",
             "spring_framework_pivotal 4.3.25" : "cpe:/a:pivotal_software:spring_framework:4.3.25",
@@ -224,8 +226,9 @@ class TechStack:
             sys.exit(e)
 
 if __name__ == "__main__":
-
+    project = input("Enter Project Name: ").capitalize()
+    version = input("Enter Project Version: ")
     df_tech_stack, comments_data = None, {}
-    TPC = TechStack()
+    TPC = TechStack(project, version)
     df_tech_stack = TPC.techStackDataToDf(comments_data=comments_data)
     TPC.makeXL(df_tech_stack=df_tech_stack)
